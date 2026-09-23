@@ -2,6 +2,9 @@ import React from 'react'
 import styled from 'styled-components'
 import Form from "react-bootstrap/Form";
 import { Buses, locations } from "../utilis";
+import { Button } from 'bootstrap';
+import { ButtonGroup } from 'react-bootstrap';
+import BusList from './BusList';
 
 const Container = styled.div`
     background-color: white;
@@ -12,6 +15,14 @@ const Container = styled.div`
 `
 
 export default function BusSearch({ searchState, setSearchState }) {
+
+    const [filteredBus, setFilteredBus] = useState(null);
+
+    const handleSearch = () => {
+        setFilteredBus(Buses.filter(
+            (data) => data.source === searchState.from && data.destination === searchState.to && data.availableDates.includes(searchState.date)));
+    };
+
     return (
         <Container>
             <pre className='mb-3'><b>S E A R C H   F O R   B U S</b></pre>
@@ -51,6 +62,13 @@ export default function BusSearch({ searchState, setSearchState }) {
                 }))}
                 />
             </div>
+            <ButtonGroup variant="primary" className="mb-3" onclick={handleSearch}>
+                Search
+            </ButtonGroup>
+
+            {filteredBus && filteredBus?.length > 0 &&  <BusList /> }
+            {filteredBus && filteredBus.length < 1 &&  <h3>No Buses Found</h3>}
+            
         </Container>
     );
 }
