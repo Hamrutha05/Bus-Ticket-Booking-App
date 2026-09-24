@@ -1,9 +1,9 @@
-import React from 'react'
-import styled from 'styled-components'
-import Form from "react-bootstrap/Form";
-import { Buses, locations } from "../utilis";
-import { Button } from 'bootstrap';
-import { ButtonGroup } from 'react-bootstrap';
+import React from 'react';
+import { useState } from 'react';
+import styled from 'styled-components';
+import Form from 'react-bootstrap/Form';
+import { Buses, locations } from '../utilis';
+import { Button } from 'react-bootstrap';
 import BusList from './BusList';
 
 const Container = styled.div`
@@ -26,7 +26,7 @@ export default function BusSearch({ searchState, setSearchState }) {
     return (
         <Container>
             <pre className='mb-3'><b>S E A R C H   F O R   B U S</b></pre>
-            <div className=".d-flex flex-column align-items-center">
+            <div className="d-flex flex-column align-items-center">
                 <Form.Select className="mb-3 width-300"
                     value={searchState.from}
                     onChange={(e) => setSearchState((prevState) => ({
@@ -56,19 +56,20 @@ export default function BusSearch({ searchState, setSearchState }) {
 
                 </Form.Select>
                 <input className='form-control mb-3 width-300'
-                type='date'
-                value={searchState.date}
-                onChange={(e) => setSearchState((prevState) => ({...prevState,date: e.target.value
-                }))}
+                    type='date'
+                    value={searchState.date}
+                    onChange={(e) => setSearchState((prevState) => ({
+                        ...prevState, date: e.target.value
+                    }))}
                 />
             </div>
-            <ButtonGroup variant="primary" className="mb-3" onclick={handleSearch}>
+            <Button variant="primary" className="mb-3" onClick={handleSearch}>
                 Search
-            </ButtonGroup>
+            </Button>
 
-            {filteredBus && filteredBus?.length > 0 &&  <BusList /> }
-            {filteredBus && filteredBus.length < 1 &&  <h3>No Buses Found</h3>}
-            
+            {filteredBus && filteredBus?.length > 0 && <BusList buses={filteredBus} />}
+            {filteredBus && filteredBus.length < 1 && <h3>No Buses Found</h3>}
+
         </Container>
     );
 }

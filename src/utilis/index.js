@@ -95,6 +95,7 @@ export const Buses = [
 ];
 export const locations = [
     "Chennai",
+    "Nagercoil",
     "Coimbatore",
     "Trichy",
     "Madurai",

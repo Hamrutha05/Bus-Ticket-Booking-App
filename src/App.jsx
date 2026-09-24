@@ -5,6 +5,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import BusSearch from './components/BusSearch'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { locations } from './utilis'
+import BusLayout from './components/BusLayout'
 
 function App() {
 
@@ -14,7 +15,9 @@ function App() {
       to: locations[2],
       date: '',
     }
-  )
+  );
+
+  const [selectedSeats, setSelectedSeats] = useState([]);
   return (
     <div>
       <Header />
@@ -23,6 +26,7 @@ function App() {
           <Route path='/' element={<BusSearch searchState={searchState}
             setSearchState={setSearchState}
           />} />
+          <Route path='/bus/:id' element={<BusLayout selectedSeats={selectedSeats} setSelectedSeats={setSelectedSeats} />}></Route>
         </Routes>
       </BrowserRouter>
     </div>
