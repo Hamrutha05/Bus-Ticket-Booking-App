@@ -27,69 +27,116 @@ align-items: center;
 text-align: center;
 `
 
-export default function BusLayout({selectedSeats, setSelectedSeats}) {
+export default function BusLayout({ selectedSeats, setSelectedSeats }) {
 
-    const {id} = useParams();
+    const { id } = useParams();
 
     const navigate = useNavigate();
 
     const selectedBus = Buses.find((data) => data.id === parseInt(id));
 
-    const isSleeper = selectedBus.bustype === 'Sleeper'
+    const isSleeper = selectedBus.busType === 'Sleeper';
 
     const seatWidth = isSleeper ? '80px' : '25px';
 
-    const generateSeats = (array, key="") => array.map(seats => Array.isArray(seats) ? <>
+    const isSeatAvailable = (seat) => selectedBus.availableSeats.includes(seat);
 
-        {
-            seats.map(seat => <TicketItem style={{width: seatWidth}} key={seat}>
-                {key}{seat}
-            </TicketItem>)
+    const selectSeat = (seat) => {
+        if(selectedSeats.includes(seat)){
+            const seats = selectedSeats.filter(selectedSeat => selectSeat !== seat );
+            setSelectedSeats(seats);
+            return
         }
-    </> 
-    : <TicketItem style={{
-        width: seatWidth,
-    }}>
-        {key} {seats}
-    </TicketItem>);
+        setSelectedSeats(prevState => ({...prevState, seat}));
+    };
 
-  return (
-    <Container>
-        <h2>{selectedBus.name}</h2>
-        <h4>Tickets</h4>
-        <h5>{selectedBus.busType}</h5>
-        <div className='d-flex '>
-            <div className='d-flex ms-2 align-items-center'>
-                <h6>Available -</h6>
-                <TicketItem style={{width: seatWidth}}>
-                    {1}
-                </TicketItem>
-            </div>
-            <div className='d-flex ms-2 align-items-center'>
-                <h6>Booked -</h6>
-                <TicketItem style={{width: seatWidth, background: "#b6b4b4"}}>
-                    {1}
-                </TicketItem>
-            </div>
-            <div className='d-flex ms-2 align-items-center'>
-                <h6>Selected -</h6>
-                <TicketItem style={{width: seatWidth, background: "#318beb"}}>
-                    {1}
-                </TicketItem>
-            </div>
-        </div>
-        <ul className='d-flex flex-wrap'>
-            {isSleeper ? <>  <TicketContainer className='d-flex align-items-center'>
-                <h6 className='p-3'>Upper</h6>
-                <div className='d-flex flex-wrap'>
-                    {generateSeats(selectedBus.seatLayout.upper.first,"U")}
+    const generateSeats = (array, key = "") =>
+        array.map(seats =>
+            Array.isArray(seats) ? (
+                <div className="d-flex">
+
+                    {
+                        seats.map((seat) => (
+                            <TicketItem 
+                                style={{ 
+                                    width: seatWidth, 
+                                    background: isSeatAvailable(`${key}${seat}`) 
+                                        ? "#fff" 
+                                        : "#b6b4b4",
+                                    cursor: isSeatAvailable(`${key}${seat}`) ? "pointer" : "",
+                                    }} key={seat}
+                                    onClick={() => selectSeat(`${key}${seat}`)}
+                                    >
+                                {key}{seat}
+                            </TicketItem>
+                        ))}
                 </div>
-                <div className='d-flex mt-4'>
-                    {generateSeats(selectedBus.seatLayout.upper.second,"U")}
+            ) : (<TicketItem 
+                style={{
+                    width: seatWidth,
+                    background: isSeatAvailable(`${key}${seats}`) 
+                        ? "#fff" 
+                        : "#b6b4b4",
+                    cursor: isSeatAvailable(`${key}${seats}`) ? "pointer" : "",
+            }}
+            onClick={() => selectSeat(`${key}${seats}`)}
+            >
+                {key} {seats}
+            </TicketItem>));
+
+    return (
+        <Container>
+            <h2>{selectedBus.name}</h2>
+            <h4>Tickets</h4>
+            <h5>{selectedBus.busType}</h5>
+            <div className='d-flex '>
+                <div className='d-flex ms-2 align-items-center'>
+                    <h6>Available -</h6>
+                    <TicketItem style={{ width: seatWidth }}>
+                        {1}
+                    </TicketItem>
                 </div>
-                </TicketContainer>
-                </> : <> </>}
-        </ul>
-    </Container>
-  );
+                <div className='d-flex ms-2 align-items-center'>
+                    <h6>Booked -</h6>
+                    <TicketItem style={{ width: seatWidth, background: "#b6b4b4" }}>
+                        {1}
+                    </TicketItem>
+                </div>
+                <div className='d-flex ms-2 align-items-center'>
+                    <h6>Selected -</h6>
+                    <TicketItem style={{ width: seatWidth, background: "#318beb" }}>
+                        {1}
+                    </TicketItem>
+                </div>
+            </div>
+            <ul className="d-flex flex-wrap">
+                {isSleeper ? (
+                    <>
+                        <TicketContainer className="d-flex flex-column align-items-center">
+                            <h6 className="p-3">Upper</h6>
+                            <div className="d-flex flex-wrap">
+                                {generateSeats(selectedBus.seatLayout.upper.first, "U")}
+                                <div className="d-flex mt-4">
+                                    {generateSeats(selectedBus.seatLayout.upper.second, "U")}
+                                </div>
+                            </div>
+
+                        </TicketContainer>
+                        <TicketContainer className="d-flex flex-column align-items-center">
+                            <h6 className="p-3">Lower</h6>
+                            <div className="d-flex flex-wrap">
+                                {generateSeats(selectedBus.seatLayout.lower.first, "L")}
+                                <div className="d-flex mt-4">
+                                    {generateSeats(selectedBus.seatLayout.lower.second, "L")}
+                                </div>
+                            </div>
+
+                        </TicketContainer>
+                    </>
+                ) : (
+                    <> </>
+                )}
+            </ul>
+        </Container>
+    );
 }
