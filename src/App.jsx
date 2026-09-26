@@ -6,6 +6,7 @@ import BusSearch from './components/BusSearch'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { locations } from './utilis'
 import BusLayout from './components/BusLayout'
+import BookingForm from './components/BookingForm'
 
 function App() {
 
@@ -26,7 +27,23 @@ function App() {
           <Route path='/' element={<BusSearch searchState={searchState}
             setSearchState={setSearchState}
           />} />
-          <Route path='/bus/:id' element={<BusLayout selectedSeats={selectedSeats} setSelectedSeats={setSelectedSeats} />}></Route>
+          <Route 
+          path='/bus/:id' 
+          element={
+          <BusLayout selectedSeats={selectedSeats} 
+          setSelectedSeats={setSelectedSeats} 
+          />
+        }
+          />
+          <Route 
+            path='/bus/book'
+            element={
+            <BookingForm selectedSeats={selectedSeats} 
+             searchState={searchState}  
+             setSelectedSeats={setSelectedSeats}
+             setSearchState={setSearchState}
+            />}
+          />
         </Routes>
       </BrowserRouter>
     </div>

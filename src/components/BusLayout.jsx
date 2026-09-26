@@ -2,6 +2,7 @@ import React from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { Buses } from "../utilis";
+import { Button } from 'react-bootstrap';
 import BusList from './BusList';
 
 
@@ -42,13 +43,15 @@ export default function BusLayout({ selectedSeats, setSelectedSeats }) {
     const isSeatAvailable = (seat) => selectedBus.availableSeats.includes(seat);
 
     const selectSeat = (seat) => {
-        if(selectedSeats.includes(seat)){
-            const seats = selectedSeats.filter(selectedSeat => selectSeat !== seat );
+        if(selectedSeats?.includes(seat)){
+            const seats = selectedSeats.filter((selectedSeat) => selectedSeat !== seat );
             setSelectedSeats(seats);
             return
         }
-        setSelectedSeats(prevState => ({...prevState, seat}));
+        setSelectedSeats((prevState) => ([...prevState, seat]));
     };
+
+    const isSeatSelected = (seat) => selectedSeats.includes(seat);
 
     const generateSeats = (array, key = "") =>
         array.map(seats =>
@@ -60,7 +63,9 @@ export default function BusLayout({ selectedSeats, setSelectedSeats }) {
                             <TicketItem 
                                 style={{ 
                                     width: seatWidth, 
-                                    background: isSeatAvailable(`${key}${seat}`) 
+                                    background: isSeatSelected(`${key}${seat}`) 
+                                        ? "#318beb" 
+                                        :  isSeatAvailable(`${key}${seat}`) 
                                         ? "#fff" 
                                         : "#b6b4b4",
                                     cursor: isSeatAvailable(`${key}${seat}`) ? "pointer" : "",
@@ -74,7 +79,9 @@ export default function BusLayout({ selectedSeats, setSelectedSeats }) {
             ) : (<TicketItem 
                 style={{
                     width: seatWidth,
-                    background: isSeatAvailable(`${key}${seats}`) 
+                    background: isSeatSelected(`${key}${seats}`) 
+                                        ? "#318beb" 
+                                        :  isSeatAvailable(`${key}${seats}`) 
                         ? "#fff" 
                         : "#b6b4b4",
                     cursor: isSeatAvailable(`${key}${seats}`) ? "pointer" : "",
@@ -134,9 +141,43 @@ export default function BusLayout({ selectedSeats, setSelectedSeats }) {
                         </TicketContainer>
                     </>
                 ) : (
-                    <> </>
+                    <TicketContainer className="d-flex flex-column align-items-center">
+        <div>Seater</div>
+
+        <div>
+            <h6>Lower</h6>
+            
+<div className="d-flex flex-wrap">
+            {generateSeats(selectedBus.seatLayout.lower.first,"L")}
+
+            <div className="d-flex flex-wrap mt-4">
+                {generateSeats(selectedBus.seatLayout.lower.second,"L")}
+            </div>
+</div>
+            <h6 className="mt-4">Upper</h6>
+<div className="d-flex flex-wrap">
+            {generateSeats(selectedBus.seatLayout.upper.first,"U")}
+
+            <div className="d-flex mt-4">
+                {generateSeats(selectedBus.seatLayout.upper.second,"U")}
+            </div>
+            </div>
+        </div>
+    </TicketContainer>
                 )}
             </ul>
+            <div className='d-flex justify-content-center'>
+                {selectedSeats?.length>0 && <h4>Slected Seats - {selectedSeats.join(", ")}</h4>}
+            </div>
+            <div>
+                <Button
+                className="ms-3" 
+                variant="success"
+                onClick = {() => navigate("/bus/book")}
+                disabled={!(selectedSeats && selectedSeats?.length > 0)}>
+                    Book Now
+                </Button>
+            </div>
         </Container>
     );
 }

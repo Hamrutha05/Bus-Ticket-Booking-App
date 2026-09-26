@@ -48,7 +48,7 @@ export default function BusList({ buses }) {
           </p>
         </div>
         <div>
-          <Button className='mb-3' variant='sucess' onClick={() => navigate(`bus/${bus.id}`)}>
+          <Button className="mb-3" variant="success" onClick={() => navigate(`bus/${bus.id}`)}>
             B O O K  N O W
           </Button>
           <h5>Available Seats: {bus.availableSeats.length}</h5>
