@@ -3,58 +3,199 @@ import { Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-
 const BusListContainer = styled.div`
-  background-color: #f0f0f0;
-  padding: 1rem;
-  border-radius: 5px;
-  box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+  max-width: 1100px;
+  margin: 35px auto;
+  padding: 25px;
+`;
+
+const Title = styled.h2`
+  color: #0f172a;
+  font-weight: 700;
+  margin-bottom: 20px;
 `;
 
 const BusItem = styled.div`
-  background-color: white;
-  padding: 1rem;
-  margin: 0.5rem 0;
-  border-radius: 5px;
-  box-shadow: 0px 2px 4px rgba(0,0,0,0.1);
+  background: white;
+  padding: 25px;
+  margin: 15px 0;
+  border-radius: 16px;
+  box-shadow: 0px 5px 18px rgba(15, 23, 42, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: 0.2s;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0px 8px 25px rgba(15, 23, 42, 0.15);
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 20px;
+  }
+`;
+
+const BusName = styled.h3`
+  margin: 0 0 8px;
+  color: #0f172a;
+  font-size: 1.4rem;
+`;
+
+const Route = styled.p`
+  margin: 0 0 18px;
+  color: #475569;
+  font-size: 15px;
+`;
+
+const TimeContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  margin-bottom: 18px;
+`;
+
+const Time = styled.div`
+  text-align: center;
+
+  strong {
+    display: block;
+    font-size: 17px;
+    color: #0f172a;
+  }
+
+  span {
+    font-size: 13px;
+    color: #64748b;
+  }
+`;
+
+const Arrow = styled.span`
+  font-size: 20px;
+  color: #2563eb;
+`;
+
+const Details = styled.div`
+  display: flex;
+  gap: 25px;
+  flex-wrap: wrap;
+`;
+
+const Detail = styled.div`
+  font-size: 14px;
+  color: #64748b;
+
+  strong {
+    color: #334155;
+  }
+`;
+
+const RightSection = styled.div`
+  text-align: right;
+  min-width: 150px;
+
+  @media (max-width: 768px) {
+    text-align: left;
+  }
+`;
+
+const Price = styled.h3`
+  color: #2563eb;
+  margin-bottom: 8px;
+`;
+
+const Seats = styled.p`
+  color: #16a34a;
+  font-weight: 600;
+`;
+
+const BookButton = styled(Button)`
+  width: 140px;
+  border-radius: 9px;
+  font-weight: 600;
+  background: #0f172a;
+  border: none;
+
+  &:hover {
+    background: #0f172a;
+  }
 `;
 
 export default function BusList({ buses }) {
+
   const navigate = useNavigate()
+
   return (
     <BusListContainer>
-      <h2>Available Buses</h2>
+
+      <Title>Available Buses 🚌</Title>
+
       {buses.map((bus) => (
-        <BusItem  className='d-flex align-items-center justify-content-between' key={bus.id}>
-        <div>
-          <h3>{bus.name}</h3>
-          <p>
-            <strong>Source:</strong> {bus.source}
-          </p>
-          <p>
-            <strong>Destination:</strong> {bus.destination}
-          </p>
-          <p>
-            <strong>Departure Time:</strong> {bus.departureTime}
-          </p>
-          <p>
-            <strong>Arrival Time:</strong> {bus.arrivalTime}
-          </p>
-          <p>
-            <strong>Price:</strong> {bus.price}
-          </p>
-          <p>
-            <strong>Type:</strong> {bus.busType}
-          </p>
-        </div>
-        <div>
-          <Button className="mb-3" variant="success" onClick={() => navigate(`bus/${bus.id}`)}>
-            B O O K  N O W
-          </Button>
-          <h5>Available Seats: {bus.availableSeats.length}</h5>
-        </div>
-      </BusItem>
+
+        <BusItem key={bus.id}>
+
+          <div>
+
+            <BusName>
+              🚌 {bus.name}
+            </BusName>
+
+            <Route>
+              {bus.source} <strong>→</strong> {bus.destination}
+            </Route>
+
+            <TimeContainer>
+
+              <Time>
+                <strong>{bus.departureTime}</strong>
+                <span>{bus.source}</span>
+              </Time>
+
+              <Arrow>→</Arrow>
+
+              <Time>
+                <strong>{bus.arrivalTime}</strong>
+                <span>{bus.destination}</span>
+              </Time>
+
+            </TimeContainer>
+
+            <Details>
+
+              <Detail>
+                <strong>Type:</strong> {bus.busType}
+              </Detail>
+
+              <Detail>
+                <strong>Seats:</strong> {bus.availableSeats.length}
+              </Detail>
+
+            </Details>
+
+          </div>
+
+          <RightSection>
+
+            <Price>{bus.price}</Price>
+
+            <Seats>
+              {bus.availableSeats.length} seats available
+            </Seats>
+
+            <BookButton
+              onClick={() => navigate(`bus/${bus.id}`)}
+            >
+              Book Now
+            </BookButton>
+
+          </RightSection>
+
+        </BusItem>
+
       ))}
+
     </BusListContainer>
   );
 }
